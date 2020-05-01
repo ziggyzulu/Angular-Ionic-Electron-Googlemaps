@@ -1,0 +1,7 @@
+node_modules/
+images/
+electron/images/
+electron-builder.env
+www/
+
+*.env

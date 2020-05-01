@@ -1,0 +1,8 @@
+{
+  "appId": "com.electron.test",
+  "appName": "electron-googlemaps",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "cordova": {}
+}

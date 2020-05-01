@@ -1,0 +1,137 @@
+<ion-split-pane contentId="map-content">
+
+
+  <ion-menu contentId="map-content">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>
+          Saved Addresses
+        </ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      
+      <!-- Section to display side menu -->
+
+      <ion-list>
+
+        <ion-item *ngIf="!addresses.length">
+          <p>You have no saved addresses. Please select an address from the map.</p>
+        </ion-item>
+
+        <!-- Loop through the addresses array, creating an ion item for each address, with a click handler which
+        sets the selected address to the address we click on -->
+
+        <ion-item *ngFor="let address of addresses" button (click)="highlightedAddress=address">
+
+          <ion-label>
+            <p>{{address.addressLine1}}</p>
+            <p *ngIf="address.addressLine2">{{address.addressLine1}}</p>
+            <p>{{address.city}}, {{address.state}}, {{address.zipCode}}</p>
+          </ion-label>
+
+          <!-- Display on whichever address is the current or selected address -->
+
+          <ion-icon name="checkmark" slot="end" *ngIf="selectedAddress===address"></ion-icon>
+
+          <!-- Clicking this pin icon will make this address the selected address. 
+          Only displayed for the highlighted address. -->
+
+          <ion-icon name="pin" slot="end" (click)="provisionAsync(address); highlightedAddress===null" 
+          *ngIf="highlightedAddress===address"></ion-icon>
+
+          <!-- Clicking this displays a confirmation to the user, which if confirmed will be deleted.
+          Only displayed for the highlighted address. -->
+
+          <ion-icon name="trash" slot="end" (click)="onDeleteClick(address)" *ngIf="highlightedAddress===address"></ion-icon>
+
+        </ion-item>
+      </ion-list>
+
+    </ion-content>
+    <!-- Footer will anchor this to the bottom of the page -->
+    <ion-footer>
+      <ion-toolbar>
+        <ion-title>
+          Your Information
+        </ion-title>
+      </ion-toolbar>
+      <form [formGroup]="endpointForm" (ngSubmit)="saveEndpoint()">
+        <ion-item>
+          <ion-label position="floating">Name</ion-label>
+          <!-- The hashtag is what binds this to the viewchild decorator -->
+          <ion-input formControlName="name" #endpointName></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Phone</ion-label>
+          <ion-input formControlName="elin"></ion-input>
+        </ion-item>
+        <!-- Disable the button if its not valid or not dirty - which means the user hasn't touched it yet -->
+        <ion-button type="submit" [disabled]="!endpointForm.valid || !endpointForm.dirty" expand="block"
+          color="tertiary">Save</ion-button>
+      </form>
+
+    </ion-footer>
+
+  </ion-menu>
+
+  <!-- The ion split pane needs two top level elements to control.
+  In order for the header to appear as a top level header to ionic, but for this to still all be contained
+  in one section, wrap it in a "section" -->
+
+  <section class="ion-page" id="map-content">
+
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-menu-toggle>
+            <ion-button>
+              <ion-icon slot="icon-only" name="menu"></ion-icon>
+            </ion-button>
+          </ion-menu-toggle>
+        </ion-buttons>
+        <ion-title>Select Location</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+
+      <agm-map [latitude]="+selectedAddress.latitude" 
+      [longitude]="+selectedAddress.longitude"
+      [zoom]="18"
+      [clickableIcons]="true"
+      [showDefaultInfoWindow]="false"
+      [usePanning]="true"
+      (mapClick)="onMapClick($event)"
+      >
+
+      <!-- Creating markers from our array of addresses -->
+      <agm-marker *ngFor="let address of addresses" 
+      [latitude]="+address.latitude" [longitude]="+address.longitude"
+      (markerClick)="provisionAsync(address)">
+    
+        <!-- AGM markers can have info windows when clicked, and need to be set up inside the agm-marker element.
+        Bind its "is open" property to an expression that evaluates to true wether or not the selected address is 
+        the currentaddress being rendered, with a maximum width of 300px.
+        We can put any HTML we want inside the window. -->
+        <agm-info-window [isOpen]="selectedAddress===address" [maxWidth]="300">
+
+          <ion-label>
+            <p>{{address.addressLine1}}</p>
+            <p *ngIf="address.addressLine2">{{address.addressLine1}}</p>
+            <p>{{address.city}}, {{address.state}}, {{address.zipCode}}</p>
+          </ion-label>
+
+        </agm-info-window>
+    
+      </agm-marker>
+
+    
+      </agm-map>
+
+  </ion-content>
+
+
+  </section>
+
+</ion-split-pane>

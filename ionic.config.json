@@ -1,0 +1,7 @@
+{
+  "name": "electron-googlemaps",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

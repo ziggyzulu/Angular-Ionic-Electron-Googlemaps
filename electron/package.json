@@ -1,0 +1,61 @@
+{
+  "name": "pinpoint",
+  "productName": "Pinpoint",
+  "version": "1.0.0",
+  "description": "An Amazing Capacitor App",
+  "main": "index.js",
+  "scripts": {
+    "electron:start": "electron ./",
+    "postinstall": "electron-builder install-app-deps",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "release": "electron-builder"
+  },
+  "dependencies": {
+    "@capacitor/electron": "^2.0.1",
+    "electron-is-dev": "^1.1.0"
+  },
+  "devDependencies": {
+    "electron": "^8.2.3",
+    "electron-builder": "^22.6.0"
+  },
+  "build": {
+    "appId": "com.electron.test",
+    "files": [
+      "!electron-builder.env"
+    ],
+    "forceCodeSigning": false,
+    "mac": {
+      "category": "public.app-category.business",
+      "icon": "images/icon.png",
+      "identity": null
+    },
+    "win": {
+      "icon": "images/icon.ico",
+      "target": {
+        "target": "nsis",
+        "arch": [
+          "x64",
+          "ia32"
+        ]
+      }
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "menuCategory": "Calvin"
+    },
+    "publish" :{
+      "provider": "github",
+      "repo": "pinpoint-releases",
+      "owner": "ziggyzulu"
+    }
+  },
+  "keywords": [
+    "capacitor",
+    "electron"
+  ],
+  "author": "Calvin",
+  "license": "ISC"
+}
