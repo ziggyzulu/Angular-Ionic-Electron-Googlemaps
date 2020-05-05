@@ -20,7 +20,7 @@ import { NgxElectronModule } from 'ngx-electron';
   imports: [
     //API for google maps, through the AngularGoogleMaps package
     AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyBhEtqX2LlkHLNn3asHZ2YQKCZf3UbLQ78'
+      apiKey: ''
     }),
     HttpClientModule,
     IonicStorageModule.forRoot({ name: 'pinpoint' }),

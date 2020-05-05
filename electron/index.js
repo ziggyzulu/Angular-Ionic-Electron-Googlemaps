@@ -1,8 +1,16 @@
 const { app, BrowserWindow, ipcMain, Menu, Tray } = require('electron');
 const isDevMode = require('electron-is-dev');
 const { CapacitorSplashScreen, configCapacitor } = require('@capacitor/electron');
+const {autoUpdater} = require('electron-updater');
+const log = require('electron-log');
 
 const path = require('path');
+
+//You can check the progress of the installer in the log files during updates.
+log.transports.file.level = 'debug'; // error, warn, verbose, debug, silly
+autoUpdater.logger = log;
+//Check for updates
+initUpdater();
 
 // Place holders for our windows so they don't get garbage collected.
 let mainWindow = null;
@@ -125,6 +133,7 @@ app.on('ready', startup);
 
 function startup(){
 
+  log.info('Hello, log. Started up');
   createWindow();
   buildTray();
 
@@ -221,3 +230,63 @@ app.on('activate', function () {
 });
 
 // Define any IPC or other custom functionality below here
+
+async function initUpdater() {
+
+  log.info('initUpdater called');
+
+  autoUpdater.on('checking-for-update', () => {
+    log.info('Checking for update...');
+    const notify = new Notification(
+      {
+        title: 'Pinpoint',
+        icon: iconPath,
+        body: 'Checking for updates.'
+      }
+    );
+    notify.show();
+  });
+  
+  autoUpdater.on('update-available', async (info) => {
+    log.info('Update available.', info);
+    const { response } = await dialog.showMessageBox({
+      type: 'question',
+      buttons: ['Update', 'Not Now'],
+      title: 'Update Available',
+      icon: iconPath,
+      message: 'A new version is available. Update now?'
+    });
+
+    if (response === 0) {
+      autoUpdater.downloadUpdate();
+    }
+  });
+  autoUpdater.on('update-not-available', (...args) => {
+    log.info('Update not available.', args);
+  });
+  autoUpdater.on('error', (...args) => {
+    log.error('Error in auto-updater.', args);
+  });
+  autoUpdater.on('download-progress', (progressObj) => {
+    let log_message = `
+    Download speed: ${progressObj.bytesPerSecond}
+    Downloaded ${progressObj.percent}% (${progressObj.transferred}/${progressObj.total}`;
+    log.info(log_message);
+  });
+  autoUpdater.on('update-downloaded', (...args) => {
+    log.info('Update downloaded; will install in 5 seconds', args);
+    const notify = new Notification(
+      {
+        title: 'Pinpoint',
+        icon: iconPath,
+        body: 'Installing update now...'
+      }
+    );
+    notify.show();
+
+    // Auto install and restart app
+    autoUpdater.quitAndInstall(true, true);
+  });
+
+  autoUpdater.autoDownload = false;
+}

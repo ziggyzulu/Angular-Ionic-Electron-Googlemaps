@@ -1,6 +1,7 @@
 node_modules/
 images/
 electron/images/
+electron/dist/
 electron-builder.env
 www/
 

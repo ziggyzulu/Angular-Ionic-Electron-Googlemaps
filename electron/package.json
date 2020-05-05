@@ -1,8 +1,8 @@
 {
   "name": "pinpoint",
   "productName": "Pinpoint",
-  "version": "1.0.0",
-  "description": "An Amazing Capacitor App",
+  "version": "1.4.0",
+  "description": "Are logs working?",
   "main": "index.js",
   "scripts": {
     "electron:start": "electron ./",
@@ -13,7 +13,9 @@
   },
   "dependencies": {
     "@capacitor/electron": "^2.0.1",
-    "electron-is-dev": "^1.1.0"
+    "electron-is-dev": "^1.1.0",
+    "electron-log": "^4.1.2",
+    "electron-updater": "^4.3.1"
   },
   "devDependencies": {
     "electron": "^8.2.3",
@@ -30,12 +32,13 @@
       "icon": "images/icon.png",
       "identity": null
     },
-    "win": {
+    "win": { 
+      "verifyUpdateCodeSignature": false, 
       "icon": "images/icon.ico",
       "target": {
         "target": "nsis",
         "arch": [
-          "x64",
+          "x64", 
           "ia32"
         ]
       }
@@ -46,7 +49,7 @@
       "allowToChangeInstallationDirectory": true,
       "menuCategory": "Calvin"
     },
-    "publish" :{
+    "publish": {
       "provider": "github",
       "repo": "pinpoint-releases",
       "owner": "ziggyzulu"
